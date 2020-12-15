@@ -22,6 +22,12 @@
         "adapter": "kotlin",
         "value": "io.github.redstoneparadox.serverbulletin.ServerBulletin"
       }
+    ],
+    "server": [
+      {
+        "adapter": "kotlin",
+        "value": "io.github.redstoneparadox.serverbulletin.server.ServerBulletinServer"
+      }
     ]
   },
   "mixins": [
