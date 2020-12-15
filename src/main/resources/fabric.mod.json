@@ -1,32 +1,34 @@
 {
   "schemaVersion": 1,
-  "id": "modid",
+  "id": "serverbulliten",
   "version": "${version}",
 
-  "name": "Example Mod",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "Server Bulletin",
+  "description": "A bulletin board for Minecraft servers.",
   "authors": [
-    "Me!"
+    "RedstoneParadox"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "sources": "https://github.com/RedstoneParadox/Server-Bulletin"
   },
 
-  "license": "CC0-1.0",
-  "icon": "assets/modid/icon.png",
+  "license": "MIT",
+  "icon": "assets/serverbulletin/icon.png",
 
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.fabricmc.example.ExampleModKt::init"
+      {
+        "adapter": "kotlin",
+        "value": "io.github.redstoneparadox.serverbulletin.ServerBulletin"
+      }
     ]
   },
   "mixins": [
-    "modid.mixins.json"
+    "serverbulletin.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.8.7",
+    "fabricloader": ">=0.10.8",
     "fabric": "*",
     "fabric-language-kotlin": "*",
     "minecraft": "1.16.x"

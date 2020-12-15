@@ -2,6 +2,7 @@ plugins {
     id 'fabric-loom'
     id 'maven-publish'
     id "org.jetbrains.kotlin.jvm"
+    id "com.jfrog.bintray" version "1.7.3"
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -17,6 +18,14 @@ minecraft {
 
 repositories {
     maven { url = "http://maven.fabricmc.net/" }
+    maven {
+        name = "RedstoneParadox"
+        url = "https://dl.bintray.com/redstoneparadox/mods"
+    }
+    maven {
+        name = 'CottonMC'
+        url = 'http://server.bbkr.space:8081/artifactory/libs-release'
+    }
 }
 
 dependencies {
@@ -32,6 +41,22 @@ dependencies {
 
     // PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
     // You may need to force-disable transitiveness on them.
+
+    modApi ("io.github.cottonmc:Jankson-Fabric:${project.jankson}") {
+        exclude group: 'net.fabricmc.fabric-api'
+    }
+    include "io.github.cottonmc:Jankson-Fabric:${project.jankson}"
+
+    modApi("io.github.redstoneparadox:paradox-config:${project.pconfig}") {
+        exclude group: 'net.fabricmc.fabric-api'
+        exclude group: 'net.fabricmc.fabric-language-kotlin'
+    }
+    include "io.github.redstoneparadox:paradox-config:${project.pconfig}"
+
+    modApi("io.github.redstoneparadox:OakTree:${project.oak_tree}") {
+        exclude group: 'net.fabricmc.fabric-api'
+    }
+    include "io.github.redstoneparadox:OakTree:${project.oak_tree}"
 }
 
 processResources {
