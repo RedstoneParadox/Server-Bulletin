@@ -4,8 +4,9 @@ import io.github.redstoneparadox.serverbulletin.BulletinMessage
 import io.github.redstoneparadox.serverbulletin.ServerBulletin
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.minecraft.nbt.CompoundTag
-import net.minecraft.nbt.ListTag
+import net.minecraft.text.Text
 
 object ClientNetworking {
     private var bulletinReceiver: (List<BulletinMessage>) -> Unit = {}
@@ -27,6 +28,13 @@ object ClientNetworking {
         bulletinReceiver = receiver
 
         ClientPlayNetworking.send(ServerBulletin.REQUEST_BULLETINS_PACKET, PacketByteBufs.empty())
+    }
+
+    fun addBulletin(title: Text, message: Text) {
+        val buf = PacketByteBufs.create()
+        buf.writeText(title)
+        buf.writeText(message)
+        ClientPlayNetworking.send(ServerBulletin.ADD_BULLETIN_PACKET, buf)
     }
 
     private fun onReceiveBulletins(bulletinTags: List<CompoundTag>) {

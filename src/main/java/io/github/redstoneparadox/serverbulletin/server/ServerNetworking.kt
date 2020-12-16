@@ -1,11 +1,14 @@
 package io.github.redstoneparadox.serverbulletin.server
 
+import io.github.redstoneparadox.serverbulletin.BulletinMessage
 import io.github.redstoneparadox.serverbulletin.ServerBulletin
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.server.world.ServerWorld
+import net.minecraft.text.Text
+import net.minecraft.world.PersistentStateManager
 
 object ServerNetworking {
     fun initReceivers() {
@@ -16,10 +19,14 @@ object ServerNetworking {
 
             onRequestBulletins(player, world)
         }
+
+        ServerPlayNetworking.registerGlobalReceiver(ServerBulletin.ADD_BULLETIN_PACKET) { server, player, handler, buf, sender ->
+            onAddBulletin(player, (player.world as ServerWorld).persistentStateManager, buf.readText(), buf.readText())
+        }
     }
 
     private fun onRequestBulletins(player: ServerPlayerEntity, world: ServerWorld) {
-        val state = ServerBulletinServer.createBulletinState(world.persistentStateManager)
+        val state = ServerBulletinServer.getOrCreateBulletinState(world.persistentStateManager)
         val bulletinTags = state.bulletins.map { it.toTag(CompoundTag()) }
 
         if (bulletinTags.size > 256) {
@@ -34,5 +41,14 @@ object ServerNetworking {
         }
 
         ServerPlayNetworking.send(player, ServerBulletin.RECEIVE_BULLETINS_PACKET, buf)
+    }
+
+    private fun onAddBulletin(player: ServerPlayerEntity, manager: PersistentStateManager, title: Text, message: Text) {
+        val state = ServerBulletinServer.getOrCreateBulletinState(manager)
+
+        if (player.hasPermissionLevel(4)) {
+            state.bulletins.add(BulletinMessage(title, message))
+            state.markDirty()
+        }
     }
 }

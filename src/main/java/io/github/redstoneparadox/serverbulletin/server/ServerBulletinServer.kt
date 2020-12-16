@@ -12,11 +12,11 @@ object ServerBulletinServer: DedicatedServerModInitializer {
         ServerNetworking.initReceivers()
 
         ServerWorldEvents.LOAD.register { server, world ->
-            createBulletinState(world.persistentStateManager)
+            getOrCreateBulletinState(world.persistentStateManager)
         }
     }
 
-    fun createBulletinState(manager: PersistentStateManager): BulletinState {
+    fun getOrCreateBulletinState(manager: PersistentStateManager): BulletinState {
         val bulletinId = "serverbulletin"
         val state = manager.getOrCreate({BulletinState(bulletinId)}, bulletinId)
         if (!state.isInitialized()) {
