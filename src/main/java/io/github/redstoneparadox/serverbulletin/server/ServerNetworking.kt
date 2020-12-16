@@ -23,6 +23,14 @@ object ServerNetworking {
         ServerPlayNetworking.registerGlobalReceiver(ServerBulletin.ADD_BULLETIN_PACKET) { server, player, handler, buf, sender ->
             onAddBulletin(player, (player.world as ServerWorld).persistentStateManager, buf.readText(), buf.readText())
         }
+
+        ServerPlayNetworking.registerGlobalReceiver(ServerBulletin.UPDATE_BULLETIN_PACKET) { server, player, handler, buf, sender ->
+            onUpdateBulletin(player, (player.world as ServerWorld).persistentStateManager, buf.readInt(), buf.readText(), buf.readText())
+        }
+
+        ServerPlayNetworking.registerGlobalReceiver(ServerBulletin.DELETE_BULLETIN_PACKET) { server, player, handler, buf, sender ->
+            onDeleteBulletin(player, (player.world as ServerWorld).persistentStateManager, buf.readInt())
+        }
     }
 
     private fun onRequestBulletins(player: ServerPlayerEntity, world: ServerWorld) {
@@ -48,6 +56,24 @@ object ServerNetworking {
 
         if (player.hasPermissionLevel(4)) {
             state.bulletins.add(BulletinMessage(title, message))
+            state.markDirty()
+        }
+    }
+
+    private fun onUpdateBulletin(player: ServerPlayerEntity, manager: PersistentStateManager, index: Int, title: Text, message: Text) {
+        val state = ServerBulletinServer.getOrCreateBulletinState(manager)
+
+        if (player.hasPermissionLevel(4)) {
+            state.bulletins[index] = BulletinMessage(title, message)
+            state.markDirty()
+        }
+    }
+
+    private fun onDeleteBulletin(player: ServerPlayerEntity, manager: PersistentStateManager, index: Int) {
+        val state = ServerBulletinServer.getOrCreateBulletinState(manager)
+
+        if (player.hasPermissionLevel(4)) {
+            state.bulletins.removeAt(index)
             state.markDirty()
         }
     }

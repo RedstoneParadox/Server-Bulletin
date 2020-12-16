@@ -9,6 +9,8 @@ object ServerBulletin: ModInitializer {
     val REQUEST_BULLETINS_PACKET = id("request_bulletin_messages")
     val RECEIVE_BULLETINS_PACKET = id("receive_bulletin_messages")
     val ADD_BULLETIN_PACKET = id("add_bulletin_message")
+    val UPDATE_BULLETIN_PACKET = id("update_bulletin_message")
+    val DELETE_BULLETIN_PACKET = id("delete_bulletin_message")
 
     override fun onInitialize() {
         println("Hello world!")

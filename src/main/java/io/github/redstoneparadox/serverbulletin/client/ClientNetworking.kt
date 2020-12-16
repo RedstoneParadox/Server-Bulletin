@@ -37,6 +37,20 @@ object ClientNetworking {
         ClientPlayNetworking.send(ServerBulletin.ADD_BULLETIN_PACKET, buf)
     }
 
+    fun updateBulletin(index: Int, title: Text, message: Text) {
+        val buf = PacketByteBufs.create()
+        buf.writeInt(index)
+        buf.writeText(title)
+        buf.writeText(message)
+        ClientPlayNetworking.send(ServerBulletin.UPDATE_BULLETIN_PACKET, buf)
+    }
+
+    fun deleteBulletin(index: Int) {
+        val buf = PacketByteBufs.create()
+        buf.writeInt(index)
+        ClientPlayNetworking.send(ServerBulletin.DELETE_BULLETIN_PACKET, buf)
+    }
+
     private fun onReceiveBulletins(bulletinTags: List<CompoundTag>) {
         bulletinTags.map { BulletinMessage(it) }
         bulletinReceiver = {}
